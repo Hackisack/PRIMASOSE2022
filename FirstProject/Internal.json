@@ -1,51 +1,32 @@
 {
-  "MeshCube|2022-03-15T20:09:31.990Z|61327": {
+  "MeshCube|2022-03-15T20:25:47.337Z|59710": {
     "ƒ.MeshCube": {
-      "idResource": "MeshCube|2022-03-15T20:09:31.990Z|61327",
+      "idResource": "MeshCube|2022-03-15T20:25:47.337Z|59710",
       "name": "MeshCube",
       "type": "MeshCube"
     }
   },
-  "Material|2022-03-15T20:09:35.390Z|80676": {
+  "Material|2022-03-15T20:25:49.690Z|00019": {
     "ƒ.Material": {
       "name": "ShaderLit",
-      "idResource": "Material|2022-03-15T20:09:35.390Z|80676",
+      "idResource": "Material|2022-03-15T20:25:49.690Z|00019",
       "shader": "ShaderLit",
       "coat": {
         "ƒ.CoatColored": {
-          "color": "[1, 0, 0, 1]",
-          "shininess": 0
+          "color": "[1, 0, 0, 1]"
         }
       }
     }
   },
-  "Graph|2022-03-15T20:09:37.310Z|20421": {
+  "Graph|2022-03-15T20:25:53.064Z|89141": {
     "ƒ.Graph": {
       "name": "NewGraph",
       "active": true,
       "components": {
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[1, 0, 0, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2022-03-15T20:09:35.390Z|80676"
-            }
-          }
-        ],
         "ComponentMesh": [
           {
             "ƒ.ComponentMesh": {
-              "idMesh": "MeshCube|2022-03-15T20:09:31.990Z|61327",
+              "idMesh": "MeshCube|2022-03-15T20:25:47.337Z|59710",
               "pivot": {
                 "translation": "[0, 0, 0]",
                 "rotation": "[0, 0, 0]",
@@ -56,10 +37,28 @@
               }
             }
           }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2022-03-15T20:25:49.690Z|00019"
+            }
+          }
         ]
       },
       "children": [],
-      "idResource": "Graph|2022-03-15T20:09:37.310Z|20421",
+      "idResource": "Graph|2022-03-15T20:25:53.064Z|89141",
       "type": "Graph"
     }
   }
