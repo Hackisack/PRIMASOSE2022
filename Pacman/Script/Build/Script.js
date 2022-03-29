@@ -58,7 +58,7 @@ var Script;
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         wallcheck = false;
-        //change direction in Grid and check if direction change is valid or not
+        //change direction in Grid and check if direction change is valid
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && +(pacman.mtxLocal.translation.y.toFixed(1)) % 1 == 0) {
             for (let x = 0; x < walls.length; x++) {
                 if (Math.round(pacman.mtxLocal.translation.x) == walls[x].mtxLocal.translation.x - 1 && Math.round(pacman.mtxLocal.translation.y) == walls[x].mtxLocal.translation.y) {
