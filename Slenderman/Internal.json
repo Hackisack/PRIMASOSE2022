@@ -1,4 +1,36 @@
 {
+  "MeshQuad|2022-04-14T13:07:29.389Z|49306": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2022-04-14T13:07:29.389Z|49306",
+      "name": "MeshQuad"
+    }
+  },
+  "Material|2022-04-14T13:08:26.887Z|91965": {
+    "ƒ.Material": {
+      "name": "ShaderGouraudTextured",
+      "idResource": "Material|2022-04-14T13:08:26.887Z|91965",
+      "shader": "ShaderGouraudTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2022-04-14T13:10:51.759Z|37449",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "TextureImage|2022-04-14T13:10:51.759Z|37449": {
+    "ƒ.TextureImage": {
+      "url": "Textures\\Grass001_1K_Color.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-04-14T13:10:51.759Z|37449",
+        "name": "Textures\\Grass001_1K_Color.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2022-04-14T13:06:24.657Z|49930": {
     "ƒ.Graph": {
       "name": "Game",
@@ -25,48 +57,6 @@
         ]
       },
       "children": [
-        {
-          "ƒ.Node": {
-            "name": "Ground",
-            "active": true,
-            "components": {
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshQuad|2022-04-14T13:07:29.389Z|49306",
-                    "pivot": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[-90, 0, 0]",
-                      "scaling": "[60, 60, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ],
-              "ComponentMaterial": [
-                {
-                  "ƒ.ComponentMaterial": {
-                    "sortForAlpha": false,
-                    "clrPrimary": "[1, 1, 1, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
-                    "pivot": {
-                      "translation": "[0, 0]",
-                      "rotation": 0,
-                      "scaling": "[1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    },
-                    "idMaterial": "Material|2022-04-14T13:08:26.887Z|91965"
-                  }
-                }
-              ]
-            },
-            "children": []
-          }
-        },
         {
           "ƒ.Node": {
             "name": "Avatar",
@@ -123,42 +113,101 @@
               }
             ]
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Environment",
+            "active": true,
+            "components": {},
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "Ground",
+                  "active": true,
+                  "components": {
+                    "ComponentMesh": [
+                      {
+                        "ƒ.ComponentMesh": {
+                          "idMesh": "MeshQuad|2022-04-14T13:07:29.389Z|49306",
+                          "pivot": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[-90, 0, 0]",
+                            "scaling": "[60, 60, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentMaterial": [
+                      {
+                        "ƒ.ComponentMaterial": {
+                          "sortForAlpha": false,
+                          "clrPrimary": "[1, 1, 1, 1]",
+                          "clrSecondary": "[1, 1, 1, 1]",
+                          "pivot": {
+                            "translation": "[0, 0]",
+                            "rotation": 0,
+                            "scaling": "[1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          },
+                          "idMaterial": "Material|2022-04-14T13:08:26.887Z|91965"
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Trees",
+                  "active": true,
+                  "components": {},
+                  "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Walls",
+                  "active": true,
+                  "components": {},
+                  "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Houses",
+                  "active": true,
+                  "components": {},
+                  "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Notes",
+                  "active": true,
+                  "components": {},
+                  "children": []
+                }
+              }
+            ]
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Slenderman",
+            "active": true,
+            "components": {},
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2022-04-14T13:06:24.657Z|49930",
       "type": "Graph"
-    }
-  },
-  "MeshQuad|2022-04-14T13:07:29.389Z|49306": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2022-04-14T13:07:29.389Z|49306",
-      "name": "MeshQuad"
-    }
-  },
-  "Material|2022-04-14T13:08:26.887Z|91965": {
-    "ƒ.Material": {
-      "name": "ShaderGouraudTextured",
-      "idResource": "Material|2022-04-14T13:08:26.887Z|91965",
-      "shader": "ShaderGouraudTextured",
-      "coat": {
-        "ƒ.CoatRemissiveTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2022-04-14T13:10:51.759Z|37449",
-          "diffuse": 1,
-          "specular": 0
-        }
-      }
-    }
-  },
-  "TextureImage|2022-04-14T13:10:51.759Z|37449": {
-    "ƒ.TextureImage": {
-      "url": "Textures\\Grass001_1K_Color.jpg",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2022-04-14T13:10:51.759Z|37449",
-        "name": "Textures\\Grass001_1K_Color.jpg",
-        "mipmap": "CRISP"
-      }
     }
   }
 }
