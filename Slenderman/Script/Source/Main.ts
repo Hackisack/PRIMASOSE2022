@@ -19,7 +19,6 @@ namespace Script {
     viewport = _event.detail;
     avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
 
-    
     viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
 
     viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
@@ -35,7 +34,7 @@ namespace Script {
     ƒ.AudioManager.default.update();
   }
 
-  function hndPointerMove(_event:PointerEvent): void {
+  function hndPointerMove(_event: PointerEvent): void {
     avatar.mtxLocal.rotateY(_event.movementX * speedRotY);
     rotationX += _event.movementY * speedRotX;
     rotationX = Math.min(60, Math.max(-60, rotationX));
@@ -43,14 +42,14 @@ namespace Script {
   }
 
   function controlWalk(): void {
-  //W & S
-   let inputWalk: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W], [ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S])
-   cntWalk.setInput(inputWalk);
-   avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    //W & S
+    let inputWalk: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W], [ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S])
+    cntWalk.setInput(inputWalk);
+    avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
 
-  //A & D
-  let inputStrafe: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A], [ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])
-  cntStrafe.setInput(inputStrafe);
-   avatar.mtxLocal.translateX(cntStrafe.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    //A & D
+    let inputStrafe: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A], [ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])
+    cntStrafe.setInput(inputStrafe);
+    avatar.mtxLocal.translateX(cntStrafe.getOutput() * ƒ.Loop.timeFrameGame / 1000);
   }
 }
