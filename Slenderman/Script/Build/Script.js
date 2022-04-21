@@ -40,64 +40,46 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
-    let dialog;
     let viewport;
-    window.addEventListener("load", init);
+    let avatar;
+    let cmpCamera;
+    let speedRotY = -0.1;
+    let speedRotX = 0.2;
+    let rotationX = 0;
+    let cntWalk = new ƒ.Control("cntWalk", 6, 0 /* PROPORTIONAL */);
+    cntWalk.setDelay(250);
+    let cntStrafe = new ƒ.Control("cntStrafe", 3, 0 /* PROPORTIONAL */);
+    cntStrafe.setDelay(250);
     document.addEventListener("interactiveViewportStarted", start);
-    function init(_event) {
-        dialog = document.querySelector("dialog");
-        dialog.querySelector("h1").textContent = document.title;
-        dialog.addEventListener("click", function (_event) {
-            // @ts-ignore until HTMLDialog is implemented by all browsers and available in dom.d.ts
-            dialog.close();
-            startInteractiveViewport();
-        });
-        //@ts-ignore
-        dialog.showModal();
-    }
-    // setup and start interactive viewport
-    async function startInteractiveViewport() {
-        // load resources referenced in the link-tag
-        await ƒ.Project.loadResourcesFromHTML();
-        ƒ.Debug.log("Project:", FudgeCore.Project.resources);
-        // pick the graph to show
-        let graph = ƒ.Project.resources["Graph|2022-04-14T13:06:24.657Z|49930"];
-        ƒ.Debug.log("Graph:", graph);
-        if (!graph) {
-            alert("Nothing to render. Create a graph with ƒat least a mesh, material and probably some light");
-            return;
-        }
-        // setup the viewport
-        let cmpCamera = new ƒ.ComponentCamera();
-        let canvas = document.querySelector("canvas");
-        let viewport = new ƒ.Viewport();
-        viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
-        ƒ.Debug.log("Viewport:", viewport);
-        // hide the cursor when interacting, also suppressing right-click menu
-        canvas.addEventListener("mousedown", canvas.requestPointerLock);
-        canvas.addEventListener("mouseup", function () {
-            document.exitPointerLock();
-        });
-        //setup audio
-        ƒ.AudioManager.default.listenTo(graph);
-        ƒ.Debug.log("Audio:", ƒ.AudioManager.default);
-        viewport.draw();
-        canvas.dispatchEvent(new CustomEvent("interactiveViewportStarted", {
-            bubbles: true,
-            detail: viewport
-        }));
-    }
     function start(_event) {
         viewport = _event.detail;
-        viewport.camera.mtxPivot.translate(new ƒ.Vector3(0, 100, 0));
-        viewport.camera.mtxPivot.rotateX(90);
+        avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
+        viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
+        viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
+        controlWalk();
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function hndPointerMove(_event) {
+        avatar.mtxLocal.rotateY(_event.movementX * speedRotY);
+        rotationX += _event.movementY * speedRotX;
+        rotationX = Math.min(60, Math.max(-60, rotationX));
+        cmpCamera.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
+    }
+    function controlWalk() {
+        //W & S
+        let inputWalk = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W], [ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]);
+        cntWalk.setInput(inputWalk);
+        avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        //A & D
+        let inputStrafe = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A], [ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]);
+        cntStrafe.setInput(inputStrafe);
+        avatar.mtxLocal.translateX(cntStrafe.getOutput() * ƒ.Loop.timeFrameGame / 1000);
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
