@@ -92,7 +92,7 @@ var Script;
         viewport.camera.mtxPivot.translate(new ƒ.Vector3(0, 100, 0));
         viewport.camera.mtxPivot.rotateX(90);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
