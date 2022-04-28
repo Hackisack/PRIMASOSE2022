@@ -88,7 +88,7 @@
               },
               "light": {
                 "ƒ.LightDirectional": {
-                  "color": "[1, 1, 1, 1]"
+                  "color": "[0.4627450980392157, 0.4549019607843137, 0.4549019607843137, 1]"
                 }
               },
               "Component": {
@@ -164,6 +164,34 @@
                             "translation": "[0, 1.7000001668930054, 0]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Torch",
+                  "active": true,
+                  "components": {
+                    "ComponentLight": [
+                      {
+                        "ƒ.ComponentLight": {
+                          "pivot": {
+                            "translation": "[0, 1.1999999284744263, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[6, 6, 50]"
+                          },
+                          "light": {
+                            "ƒ.LightSpot": {
+                              "color": "[1, 1, 1, 1]"
+                            }
                           },
                           "Component": {
                             "active": true
