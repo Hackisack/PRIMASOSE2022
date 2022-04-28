@@ -3,11 +3,10 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    class CustomComponentScript extends ƒ.ComponentScript {
+    class DropToGroundInitial extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
-        static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
+        static iSubclass = ƒ.Component.registerSubclass(DropToGroundInitial);
         // Properties may be mutated by users in the editor via the automatically created user interface
-        message = "CustomComponentScript added to ";
         constructor() {
             super();
             // Don't start when running in editor
@@ -22,7 +21,8 @@ var Script;
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
+                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.setHeight);
+                    // hier ein render prepare eventlistener aufrufen der dann den graph nimmt und dann setzen
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
@@ -33,8 +33,51 @@ var Script;
                     break;
             }
         };
+        setHeight = (_event) => {
+            const graph = ƒ.Project.resources["Graph|2022-04-14T13:06:24.657Z|49930"];
+            const ground = graph.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
+            const cmpMeshTerrain = ground.getComponent(ƒ.ComponentMesh);
+            const meshTerrain = cmpMeshTerrain.mesh;
+            const distance = meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, cmpMeshTerrain.mtxWorld).distance;
+            this.node.mtxLocal.translateY(-distance);
+        };
     }
-    Script.CustomComponentScript = CustomComponentScript;
+    Script.DropToGroundInitial = DropToGroundInitial;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class DroptToGroundFrame extends ƒ.ComponentScript {
+        static graph;
+        static ground;
+        static cmpMeshTerrain;
+        static meshTerrain;
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(DroptToGroundFrame);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+        }
+        hndEvent = (_event) => {
+            ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.setHeight);
+        };
+        setHeight = (_event) => {
+            if (!DroptToGroundFrame.graph) {
+                DroptToGroundFrame.graph = ƒ.Project.resources["Graph|2022-04-14T13:06:24.657Z|49930"];
+                DroptToGroundFrame.ground = DroptToGroundFrame.graph.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
+                DroptToGroundFrame.cmpMeshTerrain = DroptToGroundFrame.ground.getComponent(ƒ.ComponentMesh);
+                DroptToGroundFrame.meshTerrain = DroptToGroundFrame.cmpMeshTerrain.mesh;
+            }
+            const distance = DroptToGroundFrame.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, DroptToGroundFrame.cmpMeshTerrain.mtxWorld).distance;
+            this.node.mtxLocal.translateY(-distance);
+        };
+    }
+    Script.DroptToGroundFrame = DroptToGroundFrame;
 })(Script || (Script = {}));
 var Script;
 (function (Script) {
@@ -55,7 +98,9 @@ var Script;
         viewport = _event.detail;
         avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
         viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
-        viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
+        let canvas = viewport.getCanvas();
+        canvas.addEventListener("pointermove", hndPointerMove);
+        canvas.requestPointerLock();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -76,10 +121,50 @@ var Script;
         let inputWalk = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W], [ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]);
         cntWalk.setInput(inputWalk);
         avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        //Shift & Sprint
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT, ƒ.KEYBOARD_CODE.SHIFT_RIGHT]) && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
+            cntWalk.setInput(inputWalk + 2);
+        }
         //A & D
         let inputStrafe = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A], [ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]);
         cntStrafe.setInput(inputStrafe);
         avatar.mtxLocal.translateX(cntStrafe.getOutput() * ƒ.Loop.timeFrameGame / 1000);
     }
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class Slenderman extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(Slenderman);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        timeToChange = 0;
+        direction = ƒ.Vector3.ZERO();
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.move);
+                    break;
+            }
+        };
+        move = (_event) => {
+            this.node.mtxLocal.translate(ƒ.Vector3.SCALE(this.direction, ƒ.Loop.timeFrameGame / 1000));
+            if (this.timeToChange > ƒ.Time.game.get())
+                return;
+            this.timeToChange = ƒ.Time.game.get() + 1000;
+            this.direction = ƒ.Random.default.getVector3(new ƒ.Vector3(-1, 0, -1), new ƒ.Vector3(1, 0, 1));
+        };
+    }
+    Script.Slenderman = Slenderman;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

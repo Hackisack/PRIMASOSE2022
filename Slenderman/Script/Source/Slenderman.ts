@@ -2,12 +2,12 @@ namespace Script {
   import ƒ = FudgeCore;
   ƒ.Project.registerScriptNamespace(Script);  // Register the namespace to FUDGE for serialization
 
-  export class CustomComponentScript extends ƒ.ComponentScript {
+  export class Slenderman extends ƒ.ComponentScript {
     // Register the script as component for use in the editor via drag&drop
-    public static readonly iSubclass: number = ƒ.Component.registerSubclass(CustomComponentScript);
+    public static readonly iSubclass: number = ƒ.Component.registerSubclass(Slenderman);
     // Properties may be mutated by users in the editor via the automatically created user interface
-    public message: string = "CustomComponentScript added to ";
-
+    private timeToChange: number = 0;
+    private direction: ƒ.Vector3 = ƒ.Vector3.ZERO();
 
     constructor() {
       super();
@@ -18,24 +18,26 @@ namespace Script {
 
       // Listen to this component being added to or removed from a node
       this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
-      this.addEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
-      this.addEventListener(ƒ.EVENT.NODE_DESERIALIZED, this.hndEvent);
     }
 
     // Activate the functions of this component as response to events
     public hndEvent = (_event: Event): void => {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
-          ƒ.Debug.log(this.message, this.node);
-          break;
-        case ƒ.EVENT.COMPONENT_REMOVE:
-          this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
-          this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
-          break;
-        case ƒ.EVENT.NODE_DESERIALIZED:
-          // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+          this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.move);
           break;
       }
+    }
+
+    private move = (_event: Event): void => {
+      this.node.mtxLocal.translate(ƒ.Vector3.SCALE(this.direction, ƒ.Loop.timeFrameGame / 1000));
+
+      if (this.timeToChange > ƒ.Time.game.get())
+        return;
+
+      this.timeToChange = ƒ.Time.game.get() + 1000;
+
+      this.direction = ƒ.Random.default.getVector3(new ƒ.Vector3(-1, 0, -1), new ƒ.Vector3(1, 0, 1));
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {

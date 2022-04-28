@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
     <title>Slenderman</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="styles.css" />
 
     <!--Editor settings of this project-->
-    <meta type="settings" autoview="Graph|2022-04-14T13:06:24.657Z|49930" project="{'name':'Slenderman','includeAutoViewScript':true,'graphAutoView':'Graph|2022-04-14T13:06:24.657Z|49930'}" panels="[{'type':'PanelProject','state':{}},{'type':'PanelGraph','state':{'graph':'Graph|2022-04-14T13:06:24.657Z|49930'}}]"
-    />
+    <meta type="settings" autoview="Graph|2022-04-14T13:06:24.657Z|49930" project="{'name':'Slenderman','includeAutoViewScript':true,'graphAutoView':'Graph|2022-04-14T13:06:24.657Z|49930'}" panels="[{'type':'PanelProject','state':{}},{'type':'PanelGraph','state':{'graph':'Graph|2022-04-14T13:06:24.657Z|49930'}}]" />
 
     <!--Activate the following line to include the FUDGE-version of Oimo-Physics. You may want to download a local copy to work offline and be independent from future changes!-->
     <!--<script type="text/javascript" src="../../../Physics/OimoPhysics.js"></script>-->
@@ -65,10 +63,7 @@
                 viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
                 FudgeCore.Debug.log("Viewport:", viewport);
                 // hide the cursor when interacting, also suppressing right-click menu
-                canvas.addEventListener("mousedown", canvas.requestPointerLock);
-                canvas.addEventListener("mouseup", function() {
-                    document.exitPointerLock();
-                });
+
                 // make the camera interactive (complex method in FudgeAid)
                 // FudgeAid.Viewport.expandCameraToInteractiveOrbit(viewport);
                 // setup audio
@@ -105,6 +100,15 @@
 
 
 
-</body>
 
+
+
+
+
+
+
+
+
+
+</body>
 </html>
