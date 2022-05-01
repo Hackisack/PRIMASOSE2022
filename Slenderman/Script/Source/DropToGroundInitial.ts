@@ -27,7 +27,7 @@ namespace Script {
         case ƒ.EVENT.COMPONENT_ADD:
         
         this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.setHeight)  
-        // hier ein render prepare eventlistener aufrufen der dann den graph nimmt und dann setzen
+        
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);

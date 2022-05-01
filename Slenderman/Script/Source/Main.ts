@@ -24,6 +24,10 @@ namespace Script {
     canvas.addEventListener("pointermove", hndPointerMove);
     canvas.requestPointerLock();
 
+    //custom Code
+    createForest(49); //One Tree already placed
+    //custom Code
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
@@ -43,7 +47,7 @@ namespace Script {
   }
 
   function controlWalk(): void {
-    
+
     //W & S
     let inputWalk: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W], [ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]);
     cntWalk.setInput(inputWalk);
@@ -59,4 +63,46 @@ namespace Script {
     cntStrafe.setInput(inputStrafe);
     avatar.mtxLocal.translateX(cntStrafe.getOutput() * ƒ.Loop.timeFrameGame / 1000);
   }
+
+  async function createForest(count: number): Promise<void> {
+    let entryNode: ƒ.Node = viewport.getBranch().getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
+    //viewport.getBranch().getChildrenByName("Environment")[0].getChildrenByName("Trees")[0].getChildrenByName("Tree")[0].getAllComponents()[1];
+
+    for (let x = 0; x < count; x++) {
+
+      let newNode: ƒ.Node = new ƒ.Node("Tree" + x);
+      newNode.addComponent(new ƒ.ComponentTransform());
+      newNode.mtxLocal.translateX(getRandomInt(-30, 30));
+      newNode.mtxLocal.translateZ(getRandomInt(-30, 30));
+
+      let treeGraph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources["Graph|2022-04-26T14:47:20.548Z|80877"];
+      let treeInstance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(treeGraph);
+
+      newNode.addChild(treeInstance);
+
+      let script: ƒ.ComponentScript = new Script.DropToGroundInitial;
+      newNode.addComponent(script);
+
+      //add 5 Pages to Trees (one already placed)
+      if (x < 4) {
+        
+        let pageGraph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources["Graph|2022-05-01T10:55:28.972Z|52969"];
+        let pageInstance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(pageGraph);
+
+        newNode.addChild(pageInstance);
+
+      }
+      
+      entryNode.addChild(newNode);
+
+    }
+
+  }
+
+  function getRandomInt(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
 }
