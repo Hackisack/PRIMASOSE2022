@@ -66,7 +66,6 @@ namespace Script {
 
   async function createForest(count: number): Promise<void> {
     let entryNode: ƒ.Node = viewport.getBranch().getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
-    //viewport.getBranch().getChildrenByName("Environment")[0].getChildrenByName("Trees")[0].getChildrenByName("Tree")[0].getAllComponents()[1];
 
     for (let x = 0; x < count; x++) {
 

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Slenderman</title>
+    <title>PhysiscsTest</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="styles.css" />
 
     <!--Editor settings of this project-->
-    <meta type="settings" autoview="Graph|2022-04-14T13:06:24.657Z|49930" project="{'name':'Slenderman','includeAutoViewScript':true,'graphAutoView':'Graph|2022-04-14T13:06:24.657Z|49930'}" panels="[{'type':'PanelProject','state':{}},{'type':'PanelGraph','state':{'graph':'Graph|2022-04-14T13:06:24.657Z|49930'}}]" />
+    <meta type="settings" autoview="Graph|2022-05-03T14:22:09.125Z|35373" project="{'name':'PhysiscsTest','includeAutoViewScript':true,'graphAutoView':'Graph|2022-05-03T14:22:09.125Z|35373'}" panels="[{'type':'PanelProject','state':{}},{'type':'PanelGraph','state':{'graph':'Graph|2022-05-03T14:22:09.125Z|35373'}}]" />
 
     <!--Activate the following line to include the FUDGE-version of Oimo-Physics. You may want to download a local copy to work offline and be independent from future changes!-->
-    <!--<script type="text/javascript" src="../../../Physics/OimoPhysics.js"></script>-->
+    <script type="text/javascript" src="https://jirkadelloro.github.io/FUDGE/Physics/OimoPhysics.js"></script>
 
     <!--Load FUDGE. You may want to download local copies to work offline and be independent from future changes! Developers working on FUDGE itself may want to create symlinks-->
     <script type="text/javascript" src="https://jirkadelloro.github.io/FUDGE/Core/Build/FudgeCore.js"></script>
@@ -20,7 +20,6 @@
 
     <!--Load custom scripts-->
     <script type="text/javascript" src="Script/Build/Script.js" editor="true"></script>
-
 
     <script name="autoView">
         (function(_graphId) {
@@ -63,12 +62,15 @@
                 viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
                 FudgeCore.Debug.log("Viewport:", viewport);
                 // hide the cursor when interacting, also suppressing right-click menu
-
+                canvas.addEventListener("mousedown", canvas.requestPointerLock);
+                canvas.addEventListener("mouseup", function() {
+                    document.exitPointerLock();
+                });
                 // make the camera interactive (complex method in FudgeAid)
-                // FudgeAid.Viewport.expandCameraToInteractiveOrbit(viewport);
+                FudgeAid.Viewport.expandCameraToInteractiveOrbit(viewport);
                 // setup audio
                 let cmpListener = new ƒ.ComponentAudioListener();
-                // cmpCamera.node.addComponent(cmpListener);
+                cmpCamera.node.addComponent(cmpListener);
                 FudgeCore.AudioManager.default.listenWith(cmpListener);
                 FudgeCore.AudioManager.default.listenTo(graph);
                 FudgeCore.Debug.log("Audio:", FudgeCore.AudioManager.default);
@@ -92,24 +94,6 @@
     <!--Canvas for FUDGE to render to-->
     <canvas class="fullscreen">
 </canvas>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
