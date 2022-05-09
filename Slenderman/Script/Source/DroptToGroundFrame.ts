@@ -21,10 +21,12 @@ namespace Script {
       
     }
     public hndEvent = (_event: Event): void => {
+      
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.setHeight);  
     }
 
     public setHeight = (_event: Event): void => {
+      let rigibody: ƒ.ComponentRigidbody = <ƒ.ComponentRigidbody> this.node.getComponent(ƒ.ComponentRigidbody); 
       if (!DroptToGroundFrame.graph) {
         DroptToGroundFrame.graph = ƒ.Project.resources["Graph|2022-04-14T13:06:24.657Z|49930"] as ƒ.Graph;
         DroptToGroundFrame.ground = DroptToGroundFrame.graph.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
@@ -35,7 +37,13 @@ namespace Script {
         this.node.mtxLocal.translation,
         DroptToGroundFrame.cmpMeshTerrain.mtxWorld
       ).distance;
-      this.node.mtxLocal.translateY(-distance);
+
+      if (distance <= 0) {
+        
+        rigibody.translateBody(new ƒ.Vector3(0,-distance, 0));
+        
+      }
+      //this.node.mtxLocal.translateY(-distance);
     };
   }
 }

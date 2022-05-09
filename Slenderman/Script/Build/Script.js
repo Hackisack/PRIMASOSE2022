@@ -66,6 +66,7 @@ var Script;
             ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.setHeight);
         };
         setHeight = (_event) => {
+            let rigibody = this.node.getComponent(ƒ.ComponentRigidbody);
             if (!DroptToGroundFrame.graph) {
                 DroptToGroundFrame.graph = ƒ.Project.resources["Graph|2022-04-14T13:06:24.657Z|49930"];
                 DroptToGroundFrame.ground = DroptToGroundFrame.graph.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
@@ -73,7 +74,10 @@ var Script;
                 DroptToGroundFrame.meshTerrain = DroptToGroundFrame.cmpMeshTerrain.mesh;
             }
             const distance = DroptToGroundFrame.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, DroptToGroundFrame.cmpMeshTerrain.mtxWorld).distance;
-            this.node.mtxLocal.translateY(-distance);
+            if (distance <= 0) {
+                rigibody.translateBody(new ƒ.Vector3(0, -distance, 0));
+            }
+            //this.node.mtxLocal.translateY(-distance);
         };
     }
     Script.DroptToGroundFrame = DroptToGroundFrame;
@@ -84,6 +88,7 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let avatar;
+    let avatarRigi;
     let cmpCamera;
     let speedRotY = -0.1;
     let speedRotX = 0.2;
@@ -96,6 +101,7 @@ var Script;
     function start(_event) {
         viewport = _event.detail;
         avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
+        avatarRigi = viewport.getBranch().getChildrenByName("Avatar")[0].getComponent(ƒ.ComponentRigidbody);
         viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
         let canvas = viewport.getCanvas();
         canvas.addEventListener("pointermove", hndPointerMove);
@@ -107,34 +113,29 @@ var Script;
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
-        // ƒ.Physics.simulate();  // if physics is included and used
+        ƒ.Physics.simulate(); // if physics is included and used
         controlWalk();
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
     function hndPointerMove(_event) {
-        avatar.mtxLocal.rotateY(_event.movementX * speedRotY);
+        avatar.getComponent(ƒ.ComponentRigidbody).rotateBody(ƒ.Vector3.Y(_event.movementX * speedRotY));
         rotationX += _event.movementY * speedRotX;
         rotationX = Math.min(60, Math.max(-60, rotationX));
         cmpCamera.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
     }
     function controlWalk() {
-        //W & S
-        let inputWalk = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W], [ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]);
-        cntWalk.setInput(inputWalk);
-        avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
-        //Shift & Sprint
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT, ƒ.KEYBOARD_CODE.SHIFT_RIGHT]) && ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
-            cntWalk.setInput(inputWalk + 2);
-        }
-        //A & D
-        let inputStrafe = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A], [ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]);
-        cntStrafe.setInput(inputStrafe);
-        avatar.mtxLocal.translateX(cntStrafe.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+            avatarRigi.applyForce(new ƒ.Vector3(0, 0, 50));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+            avatarRigi.applyForce(new ƒ.Vector3(0, 0, -50));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+            avatarRigi.applyForce(new ƒ.Vector3(50, 0, 0));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            avatarRigi.applyForce(new ƒ.Vector3(-50, 0, 0));
     }
     async function createForest(count) {
         let entryNode = viewport.getBranch().getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
-        //viewport.getBranch().getChildrenByName("Environment")[0].getChildrenByName("Trees")[0].getChildrenByName("Tree")[0].getAllComponents()[1];
         for (let x = 0; x < count; x++) {
             let newNode = new ƒ.Node("Tree" + x);
             newNode.addComponent(new ƒ.ComponentTransform());
