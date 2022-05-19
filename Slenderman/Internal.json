@@ -131,7 +131,7 @@
                     "initialization": "TO_NODE",
                     "friction": 0.2,
                     "restitution": 0,
-                    "mass": 1,
+                    "mass": 67,
                     "dampTranslation": 0.1,
                     "dampRotation": 0.1,
                     "effectGravity": 1,
@@ -415,7 +415,7 @@
               "Slenderman": [
                 {
                   "Script.Slenderman": {
-                    "active": true,
+                    "active": false,
                     "timeToChange": 0,
                     "direction": {
                       "x": 0,
@@ -428,35 +428,12 @@
               "DroptToGroundFrame": [
                 {
                   "Script.DroptToGroundFrame": {
-                    "active": true
+                    "active": false
                   }
                 }
               ],
-              "ComponentRigidbody": [
-                {
-                  "ƒ.ComponentRigidbody": {
-                    "initialization": "TO_MESH",
-                    "friction": 0.2,
-                    "restitution": 0.2,
-                    "mass": 1,
-                    "dampTranslation": 0.1,
-                    "dampRotation": 0.1,
-                    "effectGravity": 1,
-                    "typeBody": "DYNAMIC",
-                    "typeCollider": "CUBE",
-                    "isTrigger": false,
-                    "id": 1,
-                    "pivot": {
-                      "translation": "[0, 2.000000238418579, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ]
+              "ComponentRigidbody": [],
+              "ComponentAnimator": []
             },
             "children": []
           }
@@ -704,6 +681,16 @@
       "children": [],
       "idResource": "Graph|2022-05-01T10:55:28.972Z|52969",
       "type": "Graph"
+    }
+  },
+  "Animation|2022-05-17T14:42:54.580Z|69025": {
+    "ƒ.Animation": {
+      "idResource": "Animation|2022-05-17T14:42:54.580Z|69025",
+      "name": "",
+      "labels": {},
+      "events": {},
+      "fps": 60,
+      "animationStructure": {}
     }
   }
 }

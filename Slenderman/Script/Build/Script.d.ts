@@ -21,6 +21,8 @@ declare namespace Script {
     }
 }
 declare namespace Script {
+    import ƒ = FudgeCore;
+    let avatar: ƒ.Node;
 }
 declare namespace Script {
     import ƒ = FudgeCore;
@@ -32,4 +34,25 @@ declare namespace Script {
         hndEvent: (_event: Event) => void;
         private move;
     }
+}
+declare namespace Script {
+    import ƒAid = FudgeAid;
+    enum JOB {
+        FOLLOW = 0,
+        FLEE = 1
+    }
+    export class StateMachine extends ƒAid.ComponentStateMachine<JOB> {
+        static readonly iSubclass: number;
+        private static instructions;
+        private cmpBody;
+        private time;
+        constructor();
+        static get(): ƒAid.StateMachineInstructions<JOB>;
+        private static transitDefault;
+        private static actFollow;
+        private static actFlee;
+        private hndEvent;
+        private update;
+    }
+    export {};
 }

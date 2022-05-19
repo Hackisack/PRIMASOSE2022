@@ -1,14 +1,18 @@
 namespace Script {
   import ƒ = FudgeCore;
+  import ƒAid = FudgeAid;
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  let avatar: ƒ.Node;
-  let avatarRigi: ƒ.ComponentRigidbody;
+  export let avatar: ƒ.Node;
+  let slenderman: ƒ.Node;
+  //let avatarRigi: ƒ.ComponentRigidbody;
   let cmpCamera: ƒ.ComponentCamera;
   let speedRotY: number = -0.1;
   let speedRotX: number = 0.2;
   let rotationX: number = 0;
+  let flashlight: ƒ.ComponentLight;
+  // let gamestate: GameState;
   let cntWalk: ƒ.Control = new ƒ.Control("cntWalk", 6, ƒ.CONTROL_TYPE.PROPORTIONAL);
   cntWalk.setDelay(250);
   let cntStrafe: ƒ.Control = new ƒ.Control("cntStrafe", 3, ƒ.CONTROL_TYPE.PROPORTIONAL);
@@ -19,7 +23,13 @@ namespace Script {
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
-    avatarRigi = viewport.getBranch().getChildrenByName("Avatar")[0].getComponent(ƒ.ComponentRigidbody);
+    slenderman = viewport.getBranch().getChildrenByName("Slenderman")[0];
+    //avatarRigi = viewport.getBranch().getChildrenByName("Avatar")[0].getComponent(ƒ.ComponentRigidbody);
+    flashlight = avatar.getChildrenByName("Torch")[0].getComponent(ƒ.ComponentLight);
+
+    // gamestate = new GameState();
+
+    animation();
 
     viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
     let canvas: HTMLCanvasElement = viewport.getCanvas();
@@ -39,6 +49,17 @@ namespace Script {
     controlWalk();
     viewport.draw();
     ƒ.AudioManager.default.update();
+    toggleFlashlight();
+
+    
+
+    // if (flashlight.isActive) {
+    //   gamestate.battery -= 0.001;
+    // }
+    // else {
+    //   gamestate.battery += 0.001;
+    // }
+
   }
 
   function hndPointerMove(_event: PointerEvent): void {
@@ -49,19 +70,40 @@ namespace Script {
     cmpCamera.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
   }
 
+  function toggleFlashlight(): void {
+    
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.L])) {
+      flashlight.activate(!flashlight.isActive);
+    }
+
+  }
+
   function controlWalk(): void {
 
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-    avatarRigi.applyForce(new ƒ.Vector3(0, 0, 50));
+    const input: number = ƒ.Keyboard.mapToTrit(
+      [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP],
+      [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]
+    );
 
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-    avatarRigi.applyForce(new ƒ.Vector3(0, 0, -50));
+    cntWalk.setInput(input);
+    cntWalk.setFactor(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) ? 5 : 2);
 
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-    avatarRigi.applyForce(new ƒ.Vector3(50, 0, 0));
+    const input2: number = ƒ.Keyboard.mapToTrit(
+      [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT],
+      [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]
+    );
 
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-    avatarRigi.applyForce(new ƒ.Vector3(-50, 0, 0));
+    // variante mit physics
+
+    const vector = new ƒ.Vector3(
+      (1.5 * input2 * ƒ.Loop.timeFrameGame) / 20,
+      0,
+      (cntWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20
+    );
+
+    vector.transform(avatar.mtxLocal, false);
+
+    avatar.getComponent(ƒ.ComponentRigidbody).setVelocity(vector);
   }
 
   async function createForest(count: number): Promise<void> {
@@ -102,6 +144,45 @@ namespace Script {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  function animation() {
+
+    let time0: number = 0;
+    let time1: number = 5000;
+    let value0: number = 0;
+    let value1: number = 5;
+
+    let animseq: ƒ.AnimationSequence = new ƒ.AnimationSequence();
+      animseq.addKey(new ƒ.AnimationKey(time0, value0));
+      animseq.addKey(new ƒ.AnimationKey(time1, value1));
+  
+      let animStructure: ƒ.AnimationStructure = {
+        components: {
+          ComponentTransform: [
+            {
+              "ƒ.ComponentTransform": {
+                mtxLocal: {
+                  translation: {
+                    x: animseq,
+                    y: animseq
+                  }
+                }
+              }
+            }
+          ]
+        }
+      };
+
+      let fps: number = 60;
+
+      let animation: ƒ.Animation = new ƒ.Animation("testAnimation", animStructure, fps);
+
+      let cmpAnimator: ƒ.ComponentAnimator = new ƒ.ComponentAnimator(animation, ƒ.ANIMATION_PLAYMODE["LOOP"], ƒ.ANIMATION_PLAYBACK["TIMEBASED_CONTINOUS"]);
+      cmpAnimator.scale = 1;
+
+      slenderman.addComponent(cmpAnimator);
+      cmpAnimator.activate(true);
   }
 
 }

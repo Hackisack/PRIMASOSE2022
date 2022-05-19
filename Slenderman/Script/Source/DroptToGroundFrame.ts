@@ -43,6 +43,8 @@ namespace Script {
         rigibody.translateBody(new ƒ.Vector3(0,-distance, 0));
         
       }
+      
+      
       //this.node.mtxLocal.translateY(-distance);
     };
   }
