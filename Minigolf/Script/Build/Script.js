@@ -41,16 +41,37 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
+    let cmpCamera;
+    let player;
+    let ball;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
+        //get golf ball
+        ball = viewport.getBranch().getChildrenByName("Ball")[0];
+        //setup Camera following ball
+        player = viewport.getBranch().getChildrenByName("Player")[0];
+        viewport.camera = cmpCamera = player.getChild(0).getComponent(ƒ.ComponentCamera);
+        viewport.camera.mtxPivot.translate(new ƒ.Vector3(0, 10, 15));
+        viewport.camera.mtxPivot.rotateY(180);
+        //Camera Movement
+        let canvas = viewport.getCanvas();
+        canvas.addEventListener("pointermove", hndPointerMove);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         ƒ.Physics.simulate(); // if physics is included and used
+        lookAtBall();
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function hndPointerMove(_event) {
+        //todo move in circular movement around ball
+        cmpCamera.mtxPivot.translate(new ƒ.Vector3(0, _event.movementY * 0.2, 0));
+    }
+    function lookAtBall() {
+        cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
