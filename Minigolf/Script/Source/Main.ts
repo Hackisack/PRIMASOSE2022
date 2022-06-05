@@ -4,8 +4,10 @@ namespace Script {
 
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera;
+  let playerTransform: ƒ.ComponentTransform;
   let player: ƒ.Node;
   let ball: ƒ.Node;
+  let ballRigi: ƒ.ComponentRigidbody;
 
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
@@ -14,17 +16,17 @@ namespace Script {
 
     //get golf ball
     ball = viewport.getBranch().getChildrenByName("Ball")[0];
+    ballRigi = ball.getComponent(ƒ.ComponentRigidbody);
 
     //setup Camera following ball
     player = viewport.getBranch().getChildrenByName("Player")[0];
-    viewport.camera = cmpCamera = player.getChild(0).getComponent(ƒ.ComponentCamera);
-    viewport.camera.mtxPivot.translate(new ƒ.Vector3(0, 10, 15));
-    viewport.camera.mtxPivot.rotateY(180);
+    playerTransform = player.getComponent(ƒ.ComponentTransform);
+    viewport.camera = cmpCamera = player.getComponent(ƒ.ComponentCamera);
+    viewport.camera.mtxPivot.translate(new ƒ.Vector3(0, 15, -5));
+    viewport.camera.mtxPivot.rotateX(70);
+    //playerTransform.mtxLocal.translate(new ƒ.Vector3(0, 5, -15));
 
-    //Camera Movement
-    let canvas: HTMLCanvasElement = viewport.getCanvas();
-    canvas.addEventListener("pointermove", hndPointerMove);
-
+    //fixedPoint = ball.mtxLocal.translation;
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -32,25 +34,39 @@ namespace Script {
 
   function update(_event: Event): void {
     ƒ.Physics.simulate();  // if physics is included and used
-
-
-    lookAtBall();
-
-
     viewport.draw();
     ƒ.AudioManager.default.update();
+
+    followBall();
+
+    controlBall();
   }
 
-  function hndPointerMove(_event: PointerEvent): void {
+  function controlBall() {
 
-    //todo move in circular movement around ball
-    cmpCamera.mtxPivot.translate(new ƒ.Vector3(0,_event.movementY*0.2,0));
+
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) { 
+      ballRigi.setVelocity(new ƒ.Vector3(0, 0, 10)) 
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) { 
+      ballRigi.setVelocity(new ƒ.Vector3(10, 0, 0)) 
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S])) { 
+      ballRigi.setVelocity(new ƒ.Vector3(0, 0, -10)) 
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) { 
+      ballRigi.setVelocity(new ƒ.Vector3(-10, 0, 0)) 
+    }
+
+
   }
 
-  function lookAtBall(): void {
-
-    cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation)
-
+  function followBall() {
+    let ballVector: ƒ.Vector3 = new ƒ.Vector3
+    ballVector = ball.mtxLocal.translation
+    ballVector.y = 15
+    playerTransform.mtxLocal.translation = ballVector
+   
   }
 
 }
