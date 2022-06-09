@@ -46,49 +46,103 @@ var Script;
     let player;
     let ball;
     let ballRigi;
+    let club;
+    let clubRigi;
+    let movingDirection = "up";
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
-        //get golf ball
+        // get golf ball
         ball = viewport.getBranch().getChildrenByName("Ball")[0];
         ballRigi = ball.getComponent(ƒ.ComponentRigidbody);
-        //setup Camera following ball
+        // setup Camera following ball
         player = viewport.getBranch().getChildrenByName("Player")[0];
         playerTransform = player.getComponent(ƒ.ComponentTransform);
         viewport.camera = cmpCamera = player.getComponent(ƒ.ComponentCamera);
-        viewport.camera.mtxPivot.translate(new ƒ.Vector3(0, 15, -5));
-        viewport.camera.mtxPivot.rotateX(70);
-        //playerTransform.mtxLocal.translate(new ƒ.Vector3(0, 5, -15));
-        //fixedPoint = ball.mtxLocal.translation;
+        cmpCamera.mtxPivot.translate(new ƒ.Vector3(0, 15, 0));
+        cmpCamera.mtxPivot.rotateX(90);
+        // get golf club
+        club = viewport.getBranch().getChildrenByName("Club")[0];
+        clubRigi = club.getComponent(ƒ.ComponentRigidbody);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
+    //test
     function update(_event) {
         ƒ.Physics.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
         followBall();
-        controlBall();
+        controlClub();
+        golfClub();
     }
-    function controlBall() {
+    function controlClub() {
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
-            ballRigi.setVelocity(new ƒ.Vector3(0, 0, 10));
+            movingDirection = "up";
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
-            ballRigi.setVelocity(new ƒ.Vector3(10, 0, 0));
+            movingDirection = "left";
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S])) {
-            ballRigi.setVelocity(new ƒ.Vector3(0, 0, -10));
+            movingDirection = "down";
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
-            ballRigi.setVelocity(new ƒ.Vector3(-10, 0, 0));
+            movingDirection = "right";
         }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+            //currently only accounting for the same direction. Check for other movement (movement allowed)
+            if (movingDirection == "up" && ballRigi.getVelocity().z < 1) {
+                ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0, 0, 10));
+            }
+            if (movingDirection == "down" && ballRigi.getVelocity().z > -1) {
+                ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0, 0, -10));
+            }
+            if (movingDirection == "left" && ballRigi.getVelocity().x < 1) {
+                ballRigi.applyImpulseAtPoint(new ƒ.Vector3(10, 0, 0));
+            }
+            if (movingDirection == "right" && ballRigi.getVelocity().x > -1) {
+                ballRigi.applyImpulseAtPoint(new ƒ.Vector3(-10, 0, 0));
+            }
+        }
+        //ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0,0,10));
+        //ballRigi.setVelocity(new ƒ.Vector3(0, 0, 10));
     }
     function followBall() {
         let ballVector = new ƒ.Vector3;
-        ballVector = ball.mtxLocal.translation;
+        ballVector = ball.mtxLocal.translation.clone;
         ballVector.y = 15;
         playerTransform.mtxLocal.translation = ballVector;
+    }
+    function golfClub() {
+        //club follow ball and rotation
+        let rotationVector = new ƒ.Vector3;
+        let ballVectorTwo = new ƒ.Vector3;
+        ballVectorTwo = ball.mtxLocal.translation.clone;
+        if (movingDirection == "up") {
+            ballVectorTwo.z -= 1;
+            rotationVector.y = 90;
+        }
+        if (movingDirection == "down") {
+            ballVectorTwo.z += 1;
+            rotationVector.y = 90;
+        }
+        if (movingDirection == "left") {
+            ballVectorTwo.x -= 1;
+            rotationVector.y = 0;
+        }
+        if (movingDirection == "right") {
+            ballVectorTwo.x += 1;
+            rotationVector.y = 0;
+        }
+        club.mtxLocal.translation = ballVectorTwo;
+        club.mtxLocal.rotation = rotationVector;
+        //hide club if not playable
+        if (ballRigi.getVelocity().z > 1 || ballRigi.getVelocity().z < -1 || ballRigi.getVelocity().x > 1 || ballRigi.getVelocity().x < -1) {
+            club.getComponent(ƒ.ComponentMesh).activate(false);
+        }
+        else if (ballRigi.getVelocity().z < 1 || ballRigi.getVelocity().z > -1 || ballRigi.getVelocity().x < 1 || ballRigi.getVelocity().x > -1) {
+            club.getComponent(ƒ.ComponentMesh).activate(true);
+        }
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
