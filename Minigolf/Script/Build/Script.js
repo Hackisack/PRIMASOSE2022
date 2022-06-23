@@ -59,8 +59,8 @@ var Script;
         player = viewport.getBranch().getChildrenByName("Player")[0];
         playerTransform = player.getComponent(ƒ.ComponentTransform);
         viewport.camera = cmpCamera = player.getComponent(ƒ.ComponentCamera);
-        cmpCamera.mtxPivot.translate(new ƒ.Vector3(0, 15, 0));
-        cmpCamera.mtxPivot.rotateX(90);
+        cmpCamera.mtxPivot.translate(new ƒ.Vector3(0, 15, -30));
+        cmpCamera.mtxPivot.rotateX(50);
         // get golf club
         club = viewport.getBranch().getChildrenByName("Club")[0];
         //sounds
@@ -90,19 +90,19 @@ var Script;
             movingDirection = "right";
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-            if (movingDirection == "up" && ballRigi.getVelocity().z < 4 && ballRigi.getVelocity().z > -4 && ballRigi.getVelocity().x < 4 && ballRigi.getVelocity().x > -4) {
+            if (movingDirection == "up" && ballRigi.getVelocity().z < 8 && ballRigi.getVelocity().z > -8 && ballRigi.getVelocity().x < 8 && ballRigi.getVelocity().x > -8) {
                 sound();
                 ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0, 0, 10));
             }
-            if (movingDirection == "down" && ballRigi.getVelocity().z > -4 && ballRigi.getVelocity().z < 4 && ballRigi.getVelocity().x < 4 && ballRigi.getVelocity().x > -4) {
+            if (movingDirection == "down" && ballRigi.getVelocity().z > -8 && ballRigi.getVelocity().z < 8 && ballRigi.getVelocity().x < 8 && ballRigi.getVelocity().x > -8) {
                 sound();
                 ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0, 0, -10));
             }
-            if (movingDirection == "left" && ballRigi.getVelocity().x < 4 && ballRigi.getVelocity().z < 4 && ballRigi.getVelocity().z > -4 && ballRigi.getVelocity().x > -4) {
+            if (movingDirection == "left" && ballRigi.getVelocity().x < 8 && ballRigi.getVelocity().z < 8 && ballRigi.getVelocity().z > -8 && ballRigi.getVelocity().x > -8) {
                 sound();
                 ballRigi.applyImpulseAtPoint(new ƒ.Vector3(10, 0, 0));
             }
-            if (movingDirection == "right" && ballRigi.getVelocity().x > -4 && ballRigi.getVelocity().z < 4 && ballRigi.getVelocity().z > -4 && ballRigi.getVelocity().x < 4) {
+            if (movingDirection == "right" && ballRigi.getVelocity().x > -8 && ballRigi.getVelocity().z < 8 && ballRigi.getVelocity().z > -8 && ballRigi.getVelocity().x < 8) {
                 sound();
                 ballRigi.applyImpulseAtPoint(new ƒ.Vector3(-10, 0, 0));
             }
@@ -138,12 +138,12 @@ var Script;
         club.mtxLocal.translation = ballVectorTwo;
         club.mtxLocal.rotation = rotationVector;
         //show club again
-        if (ballRigi.getVelocity().z < 4 && ballRigi.getVelocity().z > -4 && ballRigi.getVelocity().x < 4 && ballRigi.getVelocity().x > -4) {
+        if (ballRigi.getVelocity().z < 8 && ballRigi.getVelocity().z > -8 && ballRigi.getVelocity().x < 8 && ballRigi.getVelocity().x > -8) {
             club.getComponent(ƒ.ComponentMesh).activate(true);
             club.getChild(0).getComponent(ƒ.ComponentMesh).activate(true);
         }
         //hide club if not playable
-        if (ballRigi.getVelocity().z > 4 || ballRigi.getVelocity().z < -4 || ballRigi.getVelocity().x > 4 || ballRigi.getVelocity().x < -4) {
+        if (ballRigi.getVelocity().z > 8 || ballRigi.getVelocity().z < -8 || ballRigi.getVelocity().x > 8 || ballRigi.getVelocity().x < -8) {
             club.getComponent(ƒ.ComponentMesh).activate(false);
             club.getChild(0).getComponent(ƒ.ComponentMesh).activate(false);
         }
