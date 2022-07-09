@@ -134,6 +134,28 @@
       }
     }
   },
+  "MeshObj|2022-06-23T11:45:42.536Z|90340": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2022-06-23T11:45:42.536Z|90340",
+      "name": "Flag.obj",
+      "type": "MeshObj",
+      "url": "CustomOBJS\\hole.obj"
+    }
+  },
+  "Material|2022-06-23T11:46:14.722Z|64207": {
+    "ƒ.Material": {
+      "name": "FlagShader",
+      "idResource": "Material|2022-06-23T11:46:14.722Z|64207",
+      "shader": "ShaderFlat",
+      "coat": {
+        "ƒ.CoatRemissive": {
+          "color": "[1, 1, 1, 1]",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
   "Graph|2022-06-01T10:11:57.783Z|46113": {
     "ƒ.Graph": {
       "name": "Game",
@@ -232,7 +254,7 @@
                 {
                   "ƒ.ComponentTransform": {
                     "local": {
-                      "translation": "[0, 1, 0]",
+                      "translation": "[0, 0.4000000059604645, 0]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[0.49999991059303284, 0.49999991059303284, 0.49999991059303284]"
                     },
@@ -939,28 +961,6 @@
       ],
       "idResource": "Graph|2022-06-01T10:11:57.783Z|46113",
       "type": "Graph"
-    }
-  },
-  "MeshObj|2022-06-23T11:45:42.536Z|90340": {
-    "ƒ.MeshObj": {
-      "idResource": "MeshObj|2022-06-23T11:45:42.536Z|90340",
-      "name": "Flag.obj",
-      "type": "MeshObj",
-      "url": "CustomOBJS\\hole.obj"
-    }
-  },
-  "Material|2022-06-23T11:46:14.722Z|64207": {
-    "ƒ.Material": {
-      "name": "FlagShader",
-      "idResource": "Material|2022-06-23T11:46:14.722Z|64207",
-      "shader": "ShaderFlat",
-      "coat": {
-        "ƒ.CoatRemissive": {
-          "color": "[1, 1, 1, 1]",
-          "diffuse": 1,
-          "specular": 0
-        }
-      }
     }
   }
 }

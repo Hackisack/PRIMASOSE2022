@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>Minigolf</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="styles.css" />
 
     <!--Editor settings of this project-->
-    <meta type="settings" autoview="Graph|2022-06-01T10:11:57.783Z|46113" project="{'name':'Minigolf','includeAutoViewScript':true,'graphAutoView':'Graph|2022-06-01T10:11:57.783Z|46113'}" panels="[{'type':'PanelProject','state':{}},{'type':'PanelGraph','state':{'graph':'Graph|2022-06-01T10:11:57.783Z|46113'}}]" />
+    <meta type="settings" autoview="Graph|2022-06-01T10:11:57.783Z|46113" project="{'name':'Minigolf','includeAutoViewScript':true,'graphAutoView':'Graph|2022-06-01T10:11:57.783Z|46113'}" panels="[{'type':'PanelProject','state':{}},{'type':'PanelGraph','state':{'graph':'Graph|2022-06-01T10:11:57.783Z|46113'}}]"
+    />
 
     <!--Activate the following line to include the FUDGE-version of Oimo-Physics. You may want to download a local copy to work offline and be independent from future changes!-->
     <script type="text/javascript" src="https://jirkadelloro.github.io/FUDGE/Physics/OimoPhysics.js"></script>
@@ -14,6 +16,9 @@
     <!--Load FUDGE. You may want to download local copies to work offline and be independent from future changes! Developers working on FUDGE itself may want to create symlinks-->
     <script type="text/javascript" src="https://jirkadelloro.github.io/FUDGE/Core/Build/FudgeCore.js"></script>
     <script type="text/javascript" src="https://jirkadelloro.github.io/FUDGE/Aid/Build/FudgeAid.js"></script>
+
+    <!--Vui-->
+    <script type="text/javascript" src="https://jirkadelloro.github.io/FUDGE/UserInterface/Build/FudgeUserInterface.js"></script>
 
     <!--Link internal resources. The editor only loads the first, but at runtime, multiple files can contribute-->
     <link type="resources" src="Internal.json" />
@@ -87,36 +92,20 @@
     <dialog>
         <h1>Title (will be replaced by autoView)</h1>
         <p>click to start</p>
+        <p>W,A,S,D for aiming. Space for shooting</p>
     </dialog>
     <!--Canvas for FUDGE to render to-->
     <canvas class="fullscreen">
 </canvas>
 
+    <div id="timer">
+        Minutes: <input style="width: 30px" key="minutes" type="number" value="0" disabled="" /> Seconds: <input style="width: 30px" key="seconds" type="number" value="0" disabled="" />
+    </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <div id="hits">
+        Hits: <input style="width: 30px" key="hits" type="number" value="0" disabled="" />
+    </div>
 
 </body>
+
 </html>

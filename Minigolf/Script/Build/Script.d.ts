@@ -9,3 +9,17 @@ declare namespace Script {
 }
 declare namespace Script {
 }
+declare namespace Script {
+    import ƒ = FudgeCore;
+    class Timer extends ƒ.Mutable {
+        minutes: number;
+        seconds: number;
+        constructor();
+        protected reduceMutator(_mutator: ƒ.Mutator): void;
+    }
+    class Hits extends ƒ.Mutable {
+        hits: number;
+        constructor();
+        protected reduceMutator(_mutator: ƒ.Mutator): void;
+    }
+}
