@@ -93,15 +93,13 @@ namespace Script {
       viewport.draw();
       ƒ.AudioManager.default.update();
 
-      followBall();
+      //followBall();
 
       controlClub();
 
       golfClub();
 
       maxHitsCheck();
-
-      console.log(ballRigi.getVelocity().x , ballRigi.getVelocity().z)
 
   }
 
@@ -151,13 +149,6 @@ namespace Script {
        
       }
         
-  }
-
-  function followBall() { // Camera uses ball translation
-      let ballVector: ƒ.Vector3 = new ƒ.Vector3;
-      ballVector = ball.mtxLocal.translation.clone;
-      ballVector.y = 15;
-      playerTransform.mtxLocal.translation = ballVector;
   }
 
   function golfClub() { // Club uses ball translation
@@ -241,7 +232,7 @@ function hitsFunction(){
 
 function maxHitsCheck(){
 
-    //reset on last hit. Wait for last hit to finish
+    //reset on last hit. Wait for last hit to finish (until nearly stopped)
     if (hitsVui.hits >= hitsVui.maxHits && ballRigi.getVelocity().x > -0.2 && ballRigi.getVelocity().z < 0.2 && ballRigi.getVelocity().z > -0.2 && ballRigi.getVelocity().x < 0.2) {
         hitRegistration();
         

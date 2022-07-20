@@ -39,6 +39,42 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class FollowBall extends ƒ.ComponentScript {
+        static graph;
+        static ball;
+        static playerTransform;
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(FollowBall);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+        }
+        hndEvent = (_event) => {
+            ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.followBall);
+        };
+        followBall = (_event) => {
+            let rigibody = this.node.getComponent(ƒ.ComponentRigidbody);
+            if (!FollowBall.graph) {
+                FollowBall.graph = ƒ.Project.resources["Graph|2022-06-01T10:11:57.783Z|46113"];
+                FollowBall.ball = FollowBall.graph.getChildrenByName("Ball")[0];
+                FollowBall.playerTransform = FollowBall.graph.getChildrenByName("Player")[0].getComponent(ƒ.ComponentTransform);
+            }
+            let ballVector = new ƒ.Vector3;
+            ballVector = FollowBall.ball.mtxLocal.translation.clone;
+            ballVector.y = 15;
+            FollowBall.playerTransform.mtxLocal.translation = ballVector;
+        };
+    }
+    Script.FollowBall = FollowBall;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let cmpCamera;
@@ -105,11 +141,10 @@ var Script;
         ƒ.Physics.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
-        followBall();
+        //followBall();
         controlClub();
         golfClub();
         maxHitsCheck();
-        console.log(ballRigi.getVelocity().x, ballRigi.getVelocity().z);
     }
     function controlClub() {
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
@@ -158,12 +193,6 @@ var Script;
                 }
             }
         }
-    }
-    function followBall() {
-        let ballVector = new ƒ.Vector3;
-        ballVector = ball.mtxLocal.translation.clone;
-        ballVector.y = 15;
-        playerTransform.mtxLocal.translation = ballVector;
     }
     function golfClub() {
         //club follow ball and rotation
@@ -232,7 +261,7 @@ var Script;
         hitsVui.hits++;
     }
     function maxHitsCheck() {
-        //reset on last hit. Wait for last hit to finish
+        //reset on last hit. Wait for last hit to finish (until nearly stopped)
         if (hitsVui.hits >= hitsVui.maxHits && ballRigi.getVelocity().x > -0.2 && ballRigi.getVelocity().z < 0.2 && ballRigi.getVelocity().z > -0.2 && ballRigi.getVelocity().x < 0.2) {
             hitRegistration();
         }

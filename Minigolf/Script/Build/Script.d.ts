@@ -8,6 +8,18 @@ declare namespace Script {
     }
 }
 declare namespace Script {
+    import ƒ = FudgeCore;
+    class FollowBall extends ƒ.ComponentScript {
+        private static graph;
+        private static ball;
+        private static playerTransform;
+        static readonly iSubclass: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        followBall: (_event: Event) => void;
+    }
+}
+declare namespace Script {
 }
 declare namespace Script {
     import ƒ = FudgeCore;

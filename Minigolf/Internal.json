@@ -225,6 +225,13 @@
                     }
                   }
                 }
+              ],
+              "FollowBall": [
+                {
+                  "Script.FollowBall": {
+                    "active": true
+                  }
+                }
               ]
             },
             "children": []
