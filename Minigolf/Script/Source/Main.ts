@@ -2,6 +2,11 @@ namespace Script {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
+  //import config json
+  interface Config {
+    [key: string]:any;
+  }
+
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera;
   let playerTransform: ƒ.ComponentTransform;
@@ -25,12 +30,25 @@ namespace Script {
 
   let oneTimeHit:boolean = true;
 
+  //config and variables
+  let config: Config;
+  let hitStrength: number;
+  let maxHits: number
+
+  //TODO Textures and beauty
+
   
 
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
-  function start(_event: CustomEvent): void {
+ async function start(_event: CustomEvent): Promise<void> {
       viewport = _event.detail;
+
+      //get config file
+      let response: Response = await fetch("config.json");
+      config = await response.json();
+      hitStrength = config["hitStrength"].strength;
+      maxHits = config["maxHits"].hits;
 
       // get golf ball
       ball = viewport.getBranch().getChildrenByName("Ball")[0];
@@ -58,9 +76,10 @@ namespace Script {
       //get ball start position
       ball_Start = ball.mtxLocal.translation.clone;
 
-      //TODO hits Vui
+      //initialize Vui
       timerVui = new Timer();
       hitsVui = new Hits();
+      hitsVui.maxHits = maxHits;
 
       //firstHit
       firstHit = true;
@@ -79,6 +98,10 @@ namespace Script {
       controlClub();
 
       golfClub();
+
+      maxHitsCheck();
+
+      console.log(ballRigi.getVelocity().x , ballRigi.getVelocity().z)
 
   }
 
@@ -101,27 +124,27 @@ namespace Script {
 
       if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
         
-        if (movingDirection == "up" && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().x > -10) {
+        if (movingDirection == "up" && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().x > -10 && hitsVui.hits < hitsVui.maxHits) {
             sound();
-            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0,0,12));
+            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0,0,hitStrength));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
         }
-        if (movingDirection == "down" && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().x > -10) {
+        if (movingDirection == "down" && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().x > -10 && hitsVui.hits < hitsVui.maxHits) {
             sound();  
-            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0,0,-12));
+            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0,0,-hitStrength));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
         }
-        if (movingDirection == "left" && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x > -10) {
+        if (movingDirection == "left" && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x > -10 && hitsVui.hits < hitsVui.maxHits) {
             sound();  
-            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(12,0,0));
+            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(hitStrength,0,0));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
         }
-        if (movingDirection == "right" && ballRigi.getVelocity().x > -10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x < 10) {
+        if (movingDirection == "right" && ballRigi.getVelocity().x > -10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x < 10 && hitsVui.hits < hitsVui.maxHits) {
             sound();
-            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(-12,0,0));
+            ballRigi.applyImpulseAtPoint(new ƒ.Vector3(-hitStrength,0,0));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
         }
@@ -165,19 +188,18 @@ namespace Script {
     club.mtxLocal.rotation = rotationVector;
     
     //show club again
-    if (ballRigi.getVelocity().z < 9.8 && ballRigi.getVelocity().z > -9.8 && ballRigi.getVelocity().x < 9.8 && ballRigi.getVelocity().x > -9.8) {
+    if (ballRigi.getVelocity().z < 9.9 && ballRigi.getVelocity().z > -9.9 && ballRigi.getVelocity().x < 9.9 && ballRigi.getVelocity().x > -9.9) {
         club.getComponent(ƒ.ComponentMesh).activate(true); 
         club.getChild(0).getComponent(ƒ.ComponentMesh).activate(true); 
         oneTimeHit = true;
     }
 
     //hide club if not playable
-    if (ballRigi.getVelocity().z > 9.8 || ballRigi.getVelocity().z < -9.8 || ballRigi.getVelocity().x > 9.8 || ballRigi.getVelocity().x < -9.8) {
+    if (ballRigi.getVelocity().z > 9.9 || ballRigi.getVelocity().z < -9.9 || ballRigi.getVelocity().x > 9.9 || ballRigi.getVelocity().x < -9.9 || hitsVui.hits >= hitsVui.maxHits) {
       club.getComponent(ƒ.ComponentMesh).activate(false);
       club.getChild(0).getComponent(ƒ.ComponentMesh).activate(false); 
    }
-   console.log(club.getComponent(ƒ.ComponentMesh).isActive);
-   console.log(oneTimeHit)
+
    if(club.getComponent(ƒ.ComponentMesh).isActive == false && oneTimeHit == true){hitsFunction(); oneTimeHit = false}
   
   }
@@ -214,6 +236,16 @@ function timerFunction(){
 function hitsFunction(){
     
     hitsVui.hits++;
+
+}
+
+function maxHitsCheck(){
+
+    //reset on last hit. Wait for last hit to finish
+    if (hitsVui.hits >= hitsVui.maxHits && ballRigi.getVelocity().x > -0.2 && ballRigi.getVelocity().z < 0.2 && ballRigi.getVelocity().z > -0.2 && ballRigi.getVelocity().x < 0.2) {
+        hitRegistration();
+        
+    }
 
 }
 

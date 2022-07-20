@@ -17,6 +17,7 @@ namespace Script {
 
     export class Hits extends ƒ.Mutable {
         public hits: number = 0;
+        public maxHits: number = 0;
     
         public constructor() {
           super();

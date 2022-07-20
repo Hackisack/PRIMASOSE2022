@@ -19,6 +19,7 @@ declare namespace Script {
     }
     class Hits extends ƒ.Mutable {
         hits: number;
+        maxHits: number;
         constructor();
         protected reduceMutator(_mutator: ƒ.Mutator): void;
     }

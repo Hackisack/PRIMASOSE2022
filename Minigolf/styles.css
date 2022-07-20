@@ -18,7 +18,7 @@ canvas.fullscreen {
 
 #timer {
     position: absolute;
-    bottom: 90%;
+    bottom: 80%;
     background-color: cadetblue;
     padding: 3px;
     margin-left: 5%;
@@ -27,9 +27,9 @@ canvas.fullscreen {
 
 #hits {
     position: absolute;
-    bottom: 90%;
+    bottom: 60%;
     background-color: cadetblue;
     padding: 3px;
-    margin-left: 10%;
-    margin-right: 90%;
+    margin-left: 5%;
+    margin-right: 95%;
 }
