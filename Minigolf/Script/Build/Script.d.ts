@@ -20,6 +20,12 @@ declare namespace Script {
     }
 }
 declare namespace Script {
+    import ƒ = FudgeCore;
+    class GolfBall extends ƒ.Node {
+        constructor(_name: string, size: number, color: string);
+    }
+}
+declare namespace Script {
 }
 declare namespace Script {
     import ƒ = FudgeCore;

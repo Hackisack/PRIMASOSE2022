@@ -9,7 +9,6 @@ namespace Script {
 
   let viewport: ƒ.Viewport;
   let cmpCamera: ƒ.ComponentCamera;
-  let playerTransform: ƒ.ComponentTransform;
   let player: ƒ.Node;
   let ball: ƒ.Node;
   let ballRigi: ƒ.ComponentRigidbody;
@@ -17,11 +16,11 @@ namespace Script {
   let club: ƒ.Node;
   let movingDirection: string = "up";
   let golfHit: ƒ.ComponentAudio;
+  let golfWin: ƒ.ComponentAudio;
   let courses:ƒ.Node;
   let hole_one:ƒ.Node;
   let hole_one_rigi:ƒ.ComponentRigidbody;
 
-  //TODO add all Vui elements and functionality
   let timerVui: Timer;
   let hitsVui: Hits;
 
@@ -30,14 +29,13 @@ namespace Script {
 
   let oneTimeHit:boolean = true;
 
+  let movingObstacle: ƒ.Node;
+
   //config and variables
   let config: Config;
   let hitStrength: number;
-  let maxHits: number
+  let maxHits: number;
 
-  //TODO Textures and beauty
-
-  
 
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
@@ -50,13 +48,14 @@ namespace Script {
       hitStrength = config["hitStrength"].strength;
       maxHits = config["maxHits"].hits;
 
-      // get golf ball
-      ball = viewport.getBranch().getChildrenByName("Ball")[0];
-      ballRigi = ball.getComponent(ƒ.ComponentRigidbody);
+      //spawn golf ball with custom attributes
+      let golfBall: GolfBall = new GolfBall("GolfBall", config["ball"].size, config["ball"].color);
+      ballRigi = golfBall.getComponent(ƒ.ComponentRigidbody);
+      ball = golfBall;
+      viewport.getBranch().addChild(golfBall);
 
       // setup Camera following ball
       player = viewport.getBranch().getChildrenByName("Player")[0];
-      playerTransform = player.getComponent(ƒ.ComponentTransform);
       viewport.camera = cmpCamera = player.getComponent(ƒ.ComponentCamera);
       cmpCamera.mtxPivot.translate(new ƒ.Vector3(0, 15, -30));
       cmpCamera.mtxPivot.rotateX(50);
@@ -66,6 +65,7 @@ namespace Script {
 
       //sounds
       golfHit = viewport.getBranch().getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[0];
+      golfWin = viewport.getBranch().getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[2];
 
       //ball collision with flag
       courses = viewport.getBranch().getChildrenByName("Map")[0].getChildrenByName("Courses")[0];
@@ -73,8 +73,11 @@ namespace Script {
       hole_one_rigi = hole_one.getComponent(ƒ.ComponentRigidbody);
       hole_one_rigi.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, hitRegistration)
 
+      //get moving Obstacle
+      movingObstacle = courses.getChildrenByName("Course1")[0].getChildrenByName("Obstacles")[0].getChildrenByName("ObstacleShort")[0];
+
       //get ball start position
-      ball_Start = ball.mtxLocal.translation.clone;
+      ball_Start = golfBall.mtxLocal.translation.clone;
 
       //initialize Vui
       timerVui = new Timer();
@@ -84,6 +87,12 @@ namespace Script {
       //firstHit
       firstHit = true;
 
+      //animate Obstacle
+      animateMovingObstacle();
+
+      //custom event listener
+      viewport.getBranch().addEventListener("mapFinished",function (): void {sound("win")})
+
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
       ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
@@ -92,8 +101,6 @@ namespace Script {
       ƒ.Physics.simulate(); // if physics is included and used
       viewport.draw();
       ƒ.AudioManager.default.update();
-
-      //followBall();
 
       controlClub();
 
@@ -123,25 +130,25 @@ namespace Script {
       if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
         
         if (movingDirection == "up" && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().x > -10 && hitsVui.hits < hitsVui.maxHits) {
-            sound();
+            sound("hit");
             ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0,0,hitStrength));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
         }
         if (movingDirection == "down" && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().x > -10 && hitsVui.hits < hitsVui.maxHits) {
-            sound();  
+            sound("hit");  
             ballRigi.applyImpulseAtPoint(new ƒ.Vector3(0,0,-hitStrength));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
         }
         if (movingDirection == "left" && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x > -10 && hitsVui.hits < hitsVui.maxHits) {
-            sound();  
+            sound("hit");  
             ballRigi.applyImpulseAtPoint(new ƒ.Vector3(hitStrength,0,0));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
         }
         if (movingDirection == "right" && ballRigi.getVelocity().x > -10 && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x < 10 && hitsVui.hits < hitsVui.maxHits) {
-            sound();
+            sound("hit");
             ballRigi.applyImpulseAtPoint(new ƒ.Vector3(-hitStrength,0,0));
             if(firstHit == true) {timerID = setInterval(timerFunction, 1000); firstHit = false;}
             
@@ -195,9 +202,11 @@ namespace Script {
   
   }
 
-  function sound() { //play hit sound
+  function sound(type: string) { //play hit sound
+    if (type == "hit"){golfHit.play(true)};
+
+    if (type == "win"){golfWin.play(true); console.log("dysfkhjhgsghdjfgkjfhdgf")};
     
-    golfHit.play(true)
 
   }
 
@@ -215,6 +224,10 @@ namespace Script {
 
     hitsVui.hits = 0;
 
+    //dispatch custom Event
+    ball.dispatchEvent(new CustomEvent("mapFinished", {bubbles: true}));
+  
+    
 }
 
 function timerFunction(){
@@ -237,6 +250,48 @@ function maxHitsCheck(){
         hitRegistration();
         
     }
+
+}
+
+function animateMovingObstacle(){
+    
+    let time0: number = 0;
+    let time1: number = 3000;
+    let time2: number = 6000;
+    let value0: number = -23.9;
+    let value1: number = -15.9;
+    let value2: number = -23.9;
+
+    let animseq: ƒ.AnimationSequence = new ƒ.AnimationSequence();
+      animseq.addKey(new ƒ.AnimationKey(time0, value0));
+      animseq.addKey(new ƒ.AnimationKey(time1, value1));
+      animseq.addKey(new ƒ.AnimationKey(time2, value2));
+  
+      let animStructure: ƒ.AnimationStructure = {
+        components: {
+          ComponentTransform: [
+            {
+              "ƒ.ComponentTransform": {
+                mtxLocal: {
+                  translation: {
+                    y: animseq
+                  }
+                }
+              }
+            }
+          ]
+        }
+      };
+
+      let fps: number = 60;
+
+      let animation: ƒ.Animation = new ƒ.Animation("obstacleAnimation", animStructure, fps);
+
+      let cmpAnimator: ƒ.ComponentAnimator = new ƒ.ComponentAnimator(animation, ƒ.ANIMATION_PLAYMODE["LOOP"], ƒ.ANIMATION_PLAYBACK["TIMEBASED_CONTINOUS"]);
+      cmpAnimator.scale = 1;
+
+      movingObstacle.addComponent(cmpAnimator);
+      cmpAnimator.activate(true);
 
 }
 

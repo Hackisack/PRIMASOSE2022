@@ -1,11 +1,16 @@
 {
 
     "maxHits": {
-        "hits": "5"
+        "hits": "12"
     },
 
     "hitStrength": {
-        "strength": "10"
+        "strength": "8"
+    },
+
+    "ball": {
+        "size": "0.5",
+        "color": "white"
     }
 
 }

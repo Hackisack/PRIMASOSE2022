@@ -25,10 +25,10 @@ namespace Script {
     }
 
     public followBall = (_event: Event): void => {
-      let rigibody: ƒ.ComponentRigidbody = <ƒ.ComponentRigidbody> this.node.getComponent(ƒ.ComponentRigidbody); 
+      
       if (!FollowBall.graph) {
         FollowBall.graph = ƒ.Project.resources["Graph|2022-06-01T10:11:57.783Z|46113"] as ƒ.Graph;
-        FollowBall.ball = FollowBall.graph.getChildrenByName("Ball")[0];
+        FollowBall.ball = FollowBall.graph.getChildrenByName("GolfBall")[0];
         FollowBall.playerTransform = FollowBall.graph.getChildrenByName("Player")[0].getComponent(ƒ.ComponentTransform);
       }
       
