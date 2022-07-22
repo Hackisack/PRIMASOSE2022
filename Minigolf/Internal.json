@@ -204,7 +204,7 @@
         "ƒ.CoatRemissiveTextured": {
           "color": "[1, 1, 1, 0.8]",
           "idTexture": "TextureImage|2022-07-21T14:29:26.516Z|00554",
-          "diffuse": 1,
+          "diffuse": 2.000000000000001,
           "specular": 0
         }
       }
