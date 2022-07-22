@@ -107,6 +107,7 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
+    //variables defined for use
     let viewport;
     let cmpCamera;
     let player;
@@ -179,11 +180,15 @@ var Script;
         ƒ.Physics.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
+        //check for user input
         controlClub();
+        //club follows ball and hides if speed is high
         golfClub();
+        //check if max Hit Limit is reached
         maxHitsCheck();
     }
     function controlClub() {
+        //check for direction input
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
             movingDirection = "up";
         }
@@ -196,6 +201,7 @@ var Script;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
             movingDirection = "right";
         }
+        //check for "shoot" input
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
             if (movingDirection == "up" && ballRigi.getVelocity().z < 10 && ballRigi.getVelocity().z > -10 && ballRigi.getVelocity().x < 10 && ballRigi.getVelocity().x > -10 && hitsVui.hits < hitsVui.maxHits) {
                 sound("hit");
@@ -236,6 +242,7 @@ var Script;
         let rotationVector = new ƒ.Vector3;
         let ballVectorTwo = new ƒ.Vector3;
         ballVectorTwo = ball.mtxLocal.translation.clone;
+        //move club regarding to input
         if (movingDirection == "up") {
             ballVectorTwo.z += 1;
             rotationVector.y = 0;
@@ -252,6 +259,7 @@ var Script;
             ballVectorTwo.x -= 1;
             rotationVector.y = 270;
         }
+        //translate and rotate input
         club.mtxLocal.translation = ballVectorTwo;
         club.mtxLocal.rotation = rotationVector;
         //show club again
@@ -265,37 +273,44 @@ var Script;
             club.getComponent(ƒ.ComponentMesh).activate(false);
             club.getChild(0).getComponent(ƒ.ComponentMesh).activate(false);
         }
+        //count hits only if playable
         if (club.getComponent(ƒ.ComponentMesh).isActive == false && oneTimeHit == true) {
             hitsFunction();
             oneTimeHit = false;
         }
     }
+    //play sounds
     function sound(type) {
+        //play hit sound
         if (type == "hit") {
             golfHit.play(true);
         }
         ;
+        //play win sound
         if (type == "win") {
             golfWin.play(true);
             console.log("dysfkhjhgsghdjfgkjfhdgf");
         }
         ;
     }
+    //reset ball, time and hits after Flag is hit
     function hitRegistration() {
         //reset ball to start and stop any movement
         ballRigi.setPosition(ball_Start);
         ballRigi.setRotation(new ƒ.Vector3(0, 0, 0));
         ballRigi.setVelocity(new ƒ.Vector3(0, 0, 0));
-        //reset timer and firstHit variable
+        //reset timer, hits and firstHit variable
         firstHit = true;
         clearInterval(timerID);
         timerVui.seconds = 0;
         timerVui.minutes = 0;
         hitsVui.hits = 0;
-        //dispatch custom Event
+        //dispatch custom Event for sound
         ball.dispatchEvent(new CustomEvent("mapFinished", { bubbles: true }));
     }
+    //basic timer to count time played
     function timerFunction() {
+        //check if minute is passed
         if (timerVui.seconds <= 58) {
             timerVui.seconds++;
         }
@@ -304,15 +319,18 @@ var Script;
             timerVui.seconds = 0;
         }
     }
+    //increment hit in VUI
     function hitsFunction() {
         hitsVui.hits++;
     }
+    //check if last hit is played and ball stopped
     function maxHitsCheck() {
         //reset on last hit. Wait for last hit to finish (until nearly stopped)
         if (hitsVui.hits >= hitsVui.maxHits && ballRigi.getVelocity().x > -0.2 && ballRigi.getVelocity().z < 0.2 && ballRigi.getVelocity().z > -0.2 && ballRigi.getVelocity().x < 0.2) {
             hitRegistration();
         }
     }
+    //animate movin Obstacle
     function animateMovingObstacle() {
         let time0 = 0;
         let time1 = 3000;
