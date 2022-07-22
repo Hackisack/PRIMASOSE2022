@@ -295,7 +295,6 @@ var Script;
         //play win sound
         if (type == "win") {
             golfWin.play(true);
-            console.log("dysfkhjhgsghdjfgkjfhdgf");
         }
         ;
     }
