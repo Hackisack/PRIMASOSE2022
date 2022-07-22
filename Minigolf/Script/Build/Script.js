@@ -127,6 +127,9 @@ var Script;
     let timerID;
     let oneTimeHit = true;
     let movingObstacle;
+    let movingObstacle1;
+    let movingObstacle2;
+    let movingObstacle3;
     //config and variables
     let config;
     let hitStrength;
@@ -159,8 +162,11 @@ var Script;
         hole_one = courses.getChildrenByName("Course1")[0].getChildrenByName("Hole")[0];
         hole_one_rigi = hole_one.getComponent(ƒ.ComponentRigidbody);
         hole_one_rigi.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, hitRegistration);
-        //get moving Obstacle
+        //get moving Obstacles
         movingObstacle = courses.getChildrenByName("Course1")[0].getChildrenByName("Obstacles")[0].getChildrenByName("ObstacleShort")[0];
+        movingObstacle1 = courses.getChildrenByName("Course1")[0].getChildrenByName("Obstacles")[0].getChildrenByName("ObstacleBlock1")[0];
+        movingObstacle2 = courses.getChildrenByName("Course1")[0].getChildrenByName("Obstacles")[0].getChildrenByName("ObstacleBlock2")[0];
+        movingObstacle3 = courses.getChildrenByName("Course1")[0].getChildrenByName("Obstacles")[0].getChildrenByName("ObstacleBlock3")[0];
         //get ball start position
         ball_Start = golfBall.mtxLocal.translation.clone;
         //initialize Vui
@@ -332,6 +338,7 @@ var Script;
     }
     //animate movin Obstacle
     function animateMovingObstacle() {
+        //moving obstacle 1 (forth and back)
         let time0 = 0;
         let time1 = 3000;
         let time2 = 6000;
@@ -363,6 +370,46 @@ var Script;
         cmpAnimator.scale = 1;
         movingObstacle.addComponent(cmpAnimator);
         cmpAnimator.activate(true);
+        //movin obstacles 2 (up and down)
+        time0 = 0;
+        time1 = 2000;
+        time2 = 4000;
+        value0 = 0.2;
+        value1 = -0.25;
+        value2 = 0.2;
+        animseq = new ƒ.AnimationSequence();
+        animseq.addKey(new ƒ.AnimationKey(time0, value0));
+        animseq.addKey(new ƒ.AnimationKey(time1, value1));
+        animseq.addKey(new ƒ.AnimationKey(time2, value2));
+        animStructure = {
+            components: {
+                ComponentTransform: [
+                    {
+                        "ƒ.ComponentTransform": {
+                            mtxLocal: {
+                                translation: {
+                                    z: animseq
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        };
+        fps = 60;
+        animation = new ƒ.Animation("obstacleAnimation", animStructure, fps);
+        let cmpAnimator1 = new ƒ.ComponentAnimator(animation, ƒ.ANIMATION_PLAYMODE["LOOP"], ƒ.ANIMATION_PLAYBACK["TIMEBASED_CONTINOUS"]);
+        cmpAnimator1.scale = 1;
+        let cmpAnimator2 = new ƒ.ComponentAnimator(animation, ƒ.ANIMATION_PLAYMODE["LOOP"], ƒ.ANIMATION_PLAYBACK["TIMEBASED_CONTINOUS"]);
+        cmpAnimator2.scale = 1;
+        let cmpAnimator3 = new ƒ.ComponentAnimator(animation, ƒ.ANIMATION_PLAYMODE["LOOP"], ƒ.ANIMATION_PLAYBACK["TIMEBASED_CONTINOUS"]);
+        cmpAnimator3.scale = 1;
+        movingObstacle1.addComponent(cmpAnimator1);
+        cmpAnimator1.activate(true);
+        movingObstacle2.addComponent(cmpAnimator2);
+        cmpAnimator2.activate(true);
+        movingObstacle3.addComponent(cmpAnimator3);
+        cmpAnimator3.activate(true);
     }
 })(Script || (Script = {}));
 var Script;
